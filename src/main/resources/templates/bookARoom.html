@@ -1,0 +1,84 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Hotel Booking Page</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link
+	href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+	rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+	$(function() {    
+		$("#checkIn").datepicker({
+			minDate : 0,
+			maxDate : "+30D",
+			numberOfMonths : 2,
+			dateFormat: 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#checkOut").datepicker("option", "minDate", selected);
+			}
+		});
+		$("#checkOut").datepicker({
+			minDate : 0,
+			maxDate : "+30D",
+			numberOfMonths : 2,
+			dateFormat: 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#checkIn").datepicker("option", "maxDate", selected);
+			}
+		});
+	});
+	
+	$(document).ready(function() {
+		$('#noOfRooms').change(function() {
+			$('#error').empty();
+			var noOfRooms = $('#noOfRooms').val();
+			var no = parseInt([[${roomDetails.noOfRoomsAvailable}]]);
+			if(noOfRooms > no){
+				$('#error').text('Number of rooms available : '+no);
+				$('#noOfRooms').val('');
+			}
+		}); 
+		
+		$('#cancel').click(function() {
+			$('#checkIn').prop('required', false);
+			$('#checkOut').prop('required', false);
+			$('#noOfRooms').prop('required', false);
+		}); 
+	});
+	
+	/*]]>*/
+</script>
+</head>
+<body>
+	<form method="get" id="cancelForm"></form>
+	<form method="post" id="submitForm">
+		<h1>List of available hotels</h1>
+		<p><div id="error"></div></p>
+		<p>
+			City : <input type="text" id="city" name="city" readonly="readonly"
+				th:value="${roomDetails.city}"/>
+		</p>
+		<p>
+			Hotel Name : <input type="text" id="hname" name="hname"
+				readonly="readonly" th:value="${roomDetails.hotelName}"/>
+		</p> 
+		<p>
+			Check-in Date :<input type="text" id="checkIn" name="checkIn" required="required"/>
+		</p>
+		<p>
+			Check-out Date :<input type="text" id="checkOut" name="checkOut" required="required"/>
+		</p>
+		<p>
+			Number of Rooms : <input type="text" id="noOfRooms" name="noOfRooms" required="required"/>
+		</p>
+		</form>
+		<p>
+			<button type="submit" name="bookRoom" formaction="/RoomBooked" form="submitForm">Book Room</button>
+			<button type="submit" id="cancel" name="cancel" formaction="/index" form="cancelForm">Cancel</button>
+		</p>
+	
+</body>
+</html>

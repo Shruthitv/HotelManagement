@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Hotel Booking Page</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+		$('#city').change(function() {
+			var city = $('#city').val();  
+			$.get("/lowestPricedHotel", {
+				"city" : city
+			}, function(data) {
+				var list = JSON.parse(data);
+				if(list != null){
+					var datalist = '';
+					var hotelList =  '<table class="table" border="1" >' +
+							'<tr>'+
+							'<th>ID</th>'+
+							'<th>HOTEL NAME</th>'+
+							'<th>CITY</th>'+  
+							'<th>NO OF ROOMS AVAILABLE</th>'+
+							'<th>PRICE</th>'+
+							'<th>Book A room</th>'+
+							'</tr>';
+						for(var i=0;i<list.length;i++){
+							var details = list[i];
+							datalist += '<tr>'+
+								'<td>'+details.id+'</td>'+
+								'<td>'+details.hotelName+'</td>'+
+								'<td>'+details.city+'</td>'+
+								'<td>'+details.noOfRoomsAvailable+'</td>'+
+								'<td>'+details.price+'</td>'+
+								'<td><button type="submit" name="bookRoom" formaction="/bookARoom?hotelId='+details.id+'">Book Room</button></td>'+
+								'</tr>'; 
+						}
+					datalist += '</table>';
+					$('#list').html(hotelList+datalist); 
+				}
+				else{
+					$('#list').html("No hotels available in the city : "+city); 
+				}
+			});
+		});
+	}); 
+	
+function disableF5(e) { 
+	if ((e.which || e.keyCode) == 116) {
+		e.preventDefault(); 
+		window.location.href = "/index.html";
+	}
+};
+   /*]]>*/
+</script>
+</head>
+<body>
+	<h1>List of available hotels</h1>
+	<form  method="post">
+	<div>
+		City : <select th:field="*{listOfcity}" id="city" name="city">
+			<option value="default">Select a city</option>
+			<option th:each="dropDownItem : ${listOfcity}"
+				th:value="${dropDownItem}" th:text="${dropDownItem}" />
+		</select>
+	</div>
+	<tr><td>&nbsp;</td></tr>
+	<tr><td>&nbsp;</td></tr>
+	<div id="list"></div>
+	</form>
+
+</body>
+</html>

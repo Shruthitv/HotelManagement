@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Getting Started: Serving Web Content</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<script>
+function disableF5(e) { 
+	if ((e.which || e.keyCode) == 116) {
+		e.preventDefault(); 
+		window.location.href = "/index.html";
+	}
+};
+</script>
+<body>
+	<h1> <div th:text = "${Message}" th:unless="${Message == null}">Some String</div></h1>
+    <p> <a href="/hotelDetails">Book Room</a> </p>
+	<p> <a href="/listTheHotelForLowestPrice">View Lowest Priced Hotels</a> </p>
+</body>
+</html>
